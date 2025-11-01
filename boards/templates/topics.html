@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+    {{ board.name }} - {{ block.super }}
+{% endblock %}
+
+{% block breadcrumb %}
+    <li class="breadcrumb-item">
+        <a href="{% url 'home' %}">Boards</a>
+    </li>
+    <li class="breadcrumb-item active" aria-current="page">
+        {{ board.name }}
+    </li>
+{% endblock %}
+
+{% block content %}
+    <div class="mb-4 text-end">
+        <a href="{% url 'new_topic' board.pk %}" class="btn btn-primary">
+            New Topic
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle mb-4">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Topic</th>
+                    <th scope="col">Starter</th>
+                    <th scope="col">Replies</th>
+                    <th scope="col">Views</th>
+                    <th scope="col">Last Update</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for topic in topics %}
+                    <tr>
+                        <td>
+                            <a href="{% url 'topic_posts' board.pk topic.pk %}">
+                                {{ topic.subject }}
+                            </a>
+                        </td>
+                        <td>{{ topic.starter.username }}</td>
+                        <td>{{ topic.replies }}</td>
+                        <td>{{ topic.views }}</td>
+                        <td>{{ topic.last_updated|naturaltime }}</td>
+                    </tr>
+                {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center text-muted py-4">
+                            No topics yet. Be the first to post!
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% include 'includes/pagination.html' %}
+{% endblock %}
